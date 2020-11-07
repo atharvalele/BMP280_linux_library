@@ -29,4 +29,30 @@
 #define BMP280_TEMP_LSB_REG             0xFB
 #define BMP280_TEMP_XLSB_REG            0xFC
 
+/* Power Modes */
+#define BMP280_SLEEP                    0x00
+#define BMP280_FORCE                    0x01
+#define BMP280_NORMAL                   0x03
+
+/* Oversampling Macros */
+#define BMP280_OS_NONE                  0x00
+#define BMP280_OS_1X                    0x01
+#define BMP280_OS_2X                    0x02
+#define BMP280_OS_4X                    0x03
+#define BMP280_OS_8X                    0x04
+#define BMP280_OS_16X                   0x05
+
+/* Filter Macros */
+#define BMP280_FILTER_OFF               0x00
+#define BMP280_FILTER_COEFF_2           0x01
+#define BMP280_FILTER_COEFF_4           0x02
+#define BMP280_FILTER_COEFF_8           0x03
+#define BMP280_FILTER_COEFF_16          0x04
+
+/* Compensation Parameter storage */
+#define BMP280_DIG_T1_LSB               0x88
+#define BMP280_DIG_T1_MSB               0x89
+#define BMP280_DIG_T2_LSB               0x8A
+#define BMP280_DIG_T2_MSB               0x8B
+
 #endif
