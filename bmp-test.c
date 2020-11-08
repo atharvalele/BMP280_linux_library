@@ -6,12 +6,40 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+// linux i2c-dev includes
+#include "linux/i2c-dev.h"
+#include "i2c/smbus.h"
+#include "sys/ioctl.h"
+#include "sys/types.h"
+#include "sys/stat.h"
+#include "fcntl.h"
 
 #include "bmp280.h"
 
 int main(int argc, char**argv)
 {
     printf("BMP280 Testing\n");
+    
+    int bmp280;
+    int i2c_adapter = 1;
+    char filename[20];
+
+    snprintf(filename, 19, "/dev/i2c-%d", i2c_adapter);
+
+    bmp280 = open(filename, O_RDWR);
+    if (bmp280 < 0) {
+        printf("Error accessing i2c-interface.\n");
+        exit(1);
+    } else {
+        printf("i2c-interface access OK.\n");
+    }
+
+    if (ioctl(bmp280, I2C_SLAVE, BMP280_I2C_ADDR_PRIM) < 0) {
+        printf("Error accessing sensor.\n");
+    } else {
+        printf("BMP280 access OK\n");
+    }
 
     return 0;
 }
