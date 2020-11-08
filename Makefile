@@ -1,5 +1,6 @@
 CC = gcc
 CFLAGS = -O2 -g -Wall -Werror
+LDFLAGS = -li2c
 DEPS = bmp280.h
 OBJ = bmp-test.o
 
@@ -7,7 +8,7 @@ OBJ = bmp-test.o
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 bmp280: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS)
+	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 .PHONY: clean
 
