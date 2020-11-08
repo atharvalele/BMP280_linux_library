@@ -30,6 +30,7 @@
 #define BMP280_TEMP_XLSB_REG            0xFC
 
 /* Power Modes */
+#define BMP280_MODE_MASK                0x03
 #define BMP280_SLEEP                    0x00
 #define BMP280_FORCE                    0x01
 #define BMP280_NORMAL                   0x03
