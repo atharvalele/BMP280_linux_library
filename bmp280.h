@@ -56,8 +56,6 @@
 #define BMP280_DIG_T2_LSB               0x8A
 #define BMP280_DIG_T2_MSB               0x8B
 
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 // linux i2c-dev includes
@@ -70,3 +68,5 @@
 #include "fcntl.h"
 
 void bmp280_init();
+
+#endif
