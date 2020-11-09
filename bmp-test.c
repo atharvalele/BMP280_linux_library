@@ -7,7 +7,7 @@
 
 
 
-#include "bmp280.c"
+#include "bmp280.h"
 
 int main(int argc, char**argv)
 {

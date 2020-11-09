@@ -1,16 +1,6 @@
-CC = gcc
-CFLAGS = -O2 -g -Wall -Werror
-LDFLAGS = -li2c
-DEPS = bmp280.h bmp280.c
-OBJ = bmp-test.o
-
-%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
-
-bmp280: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
-
-.PHONY: clean
-
-clean:
-	rm *.o
+bmp-test.o: bmp-test.c bmp280.h
+	gcc -c -g bmp-test.c
+bmp280.o: bmp280.c bmp280.h
+	gcc -c -g bmp280.c
+bmp-test: bmp-test.o bmp280.o
+	gcc -o bmp-test bmp-test.o bmp280.o 
