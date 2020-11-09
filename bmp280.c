@@ -14,6 +14,7 @@ void bmp280_init()
     bmp280 = open(filename, O_RDWR);
     if (bmp280 < 0) {
         printf("Error accessign i2c-interface.\n");
+	exit(1);
     } 
 
     if (ioctl(bmp280, I2C_SLAVE, BMP280_I2C_ADDR_PRIM) < 0 ) {

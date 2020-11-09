@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -O2 -g -Wall -Werror
 LDFLAGS = -li2c
-DEPS = bmp280.h
+DEPS = bmp280.h bmp280.c
 OBJ = bmp-test.o
 
 %.o: %.c $(DEPS)
