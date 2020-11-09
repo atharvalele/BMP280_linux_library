@@ -5,22 +5,13 @@
  * in the actual BMP280 library files - bmp280.c & bmp280.h
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-// linux i2c-dev includes
-#include "linux/i2c.h"
-#include "linux/i2c-dev.h"
-#include "i2c/smbus.h"
-#include "sys/ioctl.h"
-#include "sys/types.h"
-#include "sys/stat.h"
-#include "fcntl.h"
+
 
 #include "bmp280.h"
 
 int main(int argc, char**argv)
 {
-    printf("BMP280 Testing\n");
+    /*printf("BMP280 Testing\n");
     
     int bmp280;
     int i2c_adapter = 1;
@@ -50,5 +41,6 @@ int main(int argc, char**argv)
     ret = i2c_smbus_read_byte_data(bmp280, BMP280_STATUS_REG);
     printf("Status: 0x%x\n", ret);
 
-    return 0;
+    return 0;*/
+    bmp280_init();
 }
