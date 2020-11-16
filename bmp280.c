@@ -1,32 +1,28 @@
 #include "bmp280.h"
 
-void bmp280_init() 
+void bmp280_init(struct bmp280_device *bmp280)
 {
-    printf("BMP280 Initialization\n");
-
-    int bmp280;
-    int i2c_adaptor = 1;
     char filename[20];
+    int ret;
 
-    int retval;
-    snprintf(filename, 19, "/dev/i2c-%d", i2c_adaptor);
-
-    bmp280 = open(filename, O_RDWR);
-    if (bmp280 < 0) {
-        printf("Error accessign i2c-interface.\n");
-	exit(1);
-    } 
-
-    if (ioctl(bmp280, I2C_SLAVE, BMP280_I2C_ADDR_PRIM) < 0 ) {
-        printf("Error accessing sensor.\n");
+    snprintf(filename, 19, "/dev/i2c-%d", bmp280->i2c_adapter);
+    
+    bmp280->fd = open(filename, O_RDWR);
+    if (bmp280->fd < 0) {
+        printf("Error accessing i2c interface.\n");
     }
 
-    retval = i2c_smbus_read_byte_data(bmp280, BMP280_CHIP_ID_REG);
-    printf("Chip ID: 0x%x\n", retval);
+    if (ioctl(bmp280->fd, I2C_SLAVE, bmp280->i2c_addr) < 0) {
+        printf("error accessing sensor.\n");
+    } else {
+        printf("BMP280 access OK\n");
+    }
 
-    retval = i2c_smbus_read_byte_data(bmp280, BMP280_STATUS_REG);
-    printf("Status: 0x%x\n", retval);
+    // read chip ID
+    ret = i2c_smbus_read_byte_data(bmp280->fd, BMP280_CHIP_ID_REG);
+    printf("Chip ID: 0x%x\n", ret);
 
-    
-
+    // read status register
+    ret = i2c_smbus_read_byte_data(bmp280->fd, BMP280_STATUS_REG);
+    printf("Status: 0x%x\n", ret);
 }
