@@ -12,6 +12,19 @@
 #ifndef _BMP280_H_
 #define _BMP280_H_
 
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+// linux i2c-dev includes
+#include "linux/i2c.h"
+#include "linux/i2c-dev.h"
+#include "i2c/smbus.h"
+#include "sys/ioctl.h"
+#include "sys/types.h"
+#include "sys/stat.h"
+#include "fcntl.h"
+
 /* Chip I2C Address */
 #define BMP280_I2C_ADDR_PRIM            0x76
 #define BMP280_I2C_ADDR_SEC             0x77
@@ -56,17 +69,17 @@
 #define BMP280_DIG_T2_LSB               0x8A
 #define BMP280_DIG_T2_MSB               0x8B
 
-#include <stdio.h>
-#include <stdlib.h>
-// linux i2c-dev includes
-#include "linux/i2c.h"
-#include "linux/i2c-dev.h"
-#include "i2c/smbus.h"
-#include "sys/ioctl.h"
-#include "sys/types.h"
-#include "sys/stat.h"
-#include "fcntl.h"
+/* Device Struct */
+struct bmp280_device {
+    uint8_t i2c_adapter;
+    uint8_t i2c_addr;
+    uint8_t fd;
+    uint8_t mode;
+    uint8_t temp_os;
+    uint8_t pres_os;
+};
 
-void bmp280_init();
+
+void bmp280_init(struct bmp280_device *bmp280);
 
 #endif
