@@ -50,3 +50,32 @@ void bmp280_write_reg(struct bmp280_device *bmp280, uint8_t reg, uint8_t dat)
 {
     i2c_smbus_write_byte_data(bmp280->fd, reg, dat);
 }
+
+uint8_t bmp280_read_reg(struct bmp280_device *bmp280, uint8_t reg)
+{
+    return i2c_smbus_read_byte_data(bmp280->fd, reg);
+}
+
+void bmp280_start_forced_meas(struct bmp280_device *bmp280)
+{
+    uint8_t ret;
+    ret = bmp280_read_reg(bmp280, BMP280_CTRL_MEAS_REG);
+    ret |= BMP280_MODE_MASK & BMP280_FORCE;
+    
+    bmp280_write_reg(bmp280, BMP280_CTRL_MEAS_REG, ret);
+}
+
+uint8_t bmp280_is_meas_in_progress(struct bmp280_device *bmp280)
+{
+    uint8_t ret;
+    
+    ret = bmp280_read_reg(bmp280, BMP280_STATUS_REG);
+    ret = ret & BMP280_MEAS_STATUS_MASK;
+
+    return ret;
+}
+
+void bmp280_wait_for_meas(struct bmp280_device *bmp280)
+{
+    while (bmp280_is_meas_in_progress(bmp280));
+}

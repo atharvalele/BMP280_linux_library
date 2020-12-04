@@ -41,6 +41,7 @@
 #define BMP280_TEMP_MSB_REG             0xFA
 #define BMP280_TEMP_LSB_REG             0xFB
 #define BMP280_TEMP_XLSB_REG            0xFC
+#define BMP280_MEAS_STATUS_MASK         0x08
 
 /* Power Modes */
 #define BMP280_MODE_MASK                0x03
@@ -88,5 +89,9 @@ void bmp280_init(struct bmp280_device *bmp280);
 void bmp280_config(struct bmp280_device *bmp280, uint8_t i2c_adapter, uint8_t i2c_addr,
                     uint8_t mode, uint8_t temp_os, uint8_t pres_os);
 void bmp280_write_reg(struct bmp280_device *bmp280, uint8_t reg, uint8_t dat);
+uint8_t bmp280_read_reg(struct bmp280_device *bmp280, uint8_t reg);
+void bmp280_start_forced_meas(struct bmp280_device *bmp280);
+uint8_t bmp280_is_meas_in_progress(struct bmp280_device *bmp280);
+void bmp280_wait_for_meas(struct bmp280_device *bmp280);
 
 #endif

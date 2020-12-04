@@ -21,5 +21,11 @@ int main(int argc, char**argv)
 
     bmp280_init(&bmp280);
 
+    bmp280_start_forced_meas(&bmp280);
+
+    bmp280_wait_for_meas(&bmp280);
+
+    printf("Meas Done.\n");
+
     return 0;
 }
