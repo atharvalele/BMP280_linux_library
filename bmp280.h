@@ -55,6 +55,10 @@
 #define BMP280_OS_4X                    0x03
 #define BMP280_OS_8X                    0x04
 #define BMP280_OS_16X                   0x05
+#define BMP280_TEMP_OS_MASK             0xE0
+#define BMP280_PRES_OS_MASK             0x1C
+#define BMP280_TEMP_OS_POS              5
+#define BMP280_PRES_OS_POS              2
 
 /* Filter Macros */
 #define BMP280_FILTER_OFF               0x00
@@ -81,5 +85,8 @@ struct bmp280_device {
 
 
 void bmp280_init(struct bmp280_device *bmp280);
+void bmp280_config(struct bmp280_device *bmp280, uint8_t i2c_adapter, uint8_t i2c_addr,
+                    uint8_t mode, uint8_t temp_os, uint8_t pres_os);
+void bmp280_write_reg(struct bmp280_device *bmp280, uint8_t reg, uint8_t dat);
 
 #endif
