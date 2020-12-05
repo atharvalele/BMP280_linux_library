@@ -74,6 +74,23 @@
 #define BMP280_DIG_T2_LSB               0x8A
 #define BMP280_DIG_T2_MSB               0x8B
 
+/* Trimming params struct */
+struct bmp280_trim_params {
+    uint16_t dig_T1;
+    int16_t  dig_T2;
+    int16_t  dig_T3;
+
+    uint16_t dig_P1;
+    int16_t  dig_P2;
+    int16_t  dig_P3;
+    int16_t  dig_P4;
+    int16_t  dig_P5;
+    int16_t  dig_P6;
+    int16_t  dig_P7;
+    int16_t  dig_P8;
+    int16_t  dig_P9;
+};
+
 /* Device Struct */
 struct bmp280_device {
     uint8_t i2c_adapter;
@@ -82,12 +99,14 @@ struct bmp280_device {
     uint8_t mode;
     uint8_t temp_os;
     uint8_t pres_os;
+    struct bmp280_trim_params trim_params;
 };
 
 
 void bmp280_init(struct bmp280_device *bmp280);
 void bmp280_config(struct bmp280_device *bmp280, uint8_t i2c_adapter, uint8_t i2c_addr,
                     uint8_t mode, uint8_t temp_os, uint8_t pres_os);
+void bmp280_read_trim_params(struct bmp280_device *bmp280);
 void bmp280_write_reg(struct bmp280_device *bmp280, uint8_t reg, uint8_t dat);
 uint8_t bmp280_read_reg(struct bmp280_device *bmp280, uint8_t reg);
 void bmp280_start_forced_meas(struct bmp280_device *bmp280);
