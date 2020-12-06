@@ -180,17 +180,18 @@ void bmp280_wait_for_meas(struct bmp280_device *bmp280)
     while (bmp280_is_meas_in_progress(bmp280));
 }
 
-double convert_temperature_raw_values(struct bmp280_device *bmp280)
+void bmp280_convert_temperature_raw_values(struct bmp280_device *bmp280)
 {
     double var1, var2, T;
     var1 = (((double)bmp280->temperature_raw)/16384.0 - ((double)bmp280->trim_params.dig_T1)/1024) * ((double)bmp280->trim_params.dig_T2);
     var2 = ((((double)bmp280->temperature_raw)/131072.0 - ((double)bmp280->trim_params.dig_T1)/8192.0) * (((double)bmp280->temperature_raw)/131072.0 - ((double)bmp280->trim_params.dig_T1)/8192.0)) * ((double)bmp280->trim_params.dig_T3);
     bmp280->t_fine = (int32_t) (var1 + var2);
     T = (var1 + var2) / 5120.0;
-    return T;
+
+    bmp280->temperature_val = T;
 }
 
-double convert_pressure_raw_values(struct bmp280_device *bmp280)
+void bmp280_convert_pressure_raw_values(struct bmp280_device *bmp280)
 {
     double var1, var2, p;
     var1 = ((double)bmp280->t_fine/2.0) - 64000.0;
@@ -199,12 +200,24 @@ double convert_pressure_raw_values(struct bmp280_device *bmp280)
     var2 = (var2/4.0) + (((double)bmp280->trim_params.dig_P4) * 65536.0);
     var1 = (((double)bmp280->trim_params.dig_P3) * var1 * var1 / 524288.0 + ((double)bmp280->trim_params.dig_P2) * var1) / 524288.0;
     var1 = (1.0 + var1 /32768.0) * ((double) bmp280->trim_params.dig_P1);
-    if (var1 == 0.0)
-        return 0;
+    if (var1 == 0.0) {
+        bmp280->pressure_val = 0;
+        return;
+    }
     p = 1048576.0 - (double)bmp280->pressure_raw;
     p = (p - (var2 / 4096.0)) * 6250.0 / var1;
     var1 = ((double)bmp280->trim_params.dig_P9) * p * p / 2147483648.0;
     var2 = p * ((double)bmp280->trim_params.dig_P8) / 32768.0;
     p = p + (var1 + var2 + ((double)bmp280->trim_params.dig_P7)) / 16.0;
-    return p;
+
+    bmp280->pressure_val = p;
+}
+
+void bmp280_oneshot_read(struct bmp280_device *bmp280)
+{
+    bmp280_start_forced_meas(bmp280);
+    bmp280_wait_for_meas(bmp280);
+    bmp280_read_raw_values(bmp280, BMP280_RAW_VAL_REG_START);
+    bmp280_convert_temperature_raw_values(bmp280);
+    bmp280_convert_pressure_raw_values(bmp280);
 }

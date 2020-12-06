@@ -35,6 +35,7 @@
 #define BMP280_STATUS_REG               0xF3
 #define BMP280_CTRL_MEAS_REG            0xF4
 #define BMP280_CONFIG_REG               0xF5
+#define BMP280_RAW_VAL_REG_START        0xF7
 #define BMP280_PRESS_MSB_REG            0xF7
 #define BMP280_PRESS_LSB_REG            0xF8
 #define BMP280_PRESS_XLSB_REG           0xF9
@@ -110,6 +111,8 @@ struct bmp280_device {
     uint8_t raw_values[6];
     uint32_t temperature_raw;
     uint32_t pressure_raw;
+    double temperature_val;
+    double pressure_val;
     int32_t t_fine;
     struct bmp280_trim_params trim_params;
 };
@@ -125,6 +128,8 @@ void bmp280_read_raw_values(struct bmp280_device *bmp280, uint8_t reg);
 void bmp280_start_forced_meas(struct bmp280_device *bmp280);
 uint8_t bmp280_is_meas_in_progress(struct bmp280_device *bmp280);
 void bmp280_wait_for_meas(struct bmp280_device *bmp280);
-double convert_temperature_raw_values(struct bmp280_device *bmp280);
-double convert_pressure_raw_values(struct bmp280_device *bmp280);
+void bmp280_convert_temperature_raw_values(struct bmp280_device *bmp280);
+void bmp280_convert_pressure_raw_values(struct bmp280_device *bmp280);
+void bmp280_oneshot_read(struct bmp280_device *bmp280);
+
 #endif

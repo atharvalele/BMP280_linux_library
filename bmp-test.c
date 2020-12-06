@@ -21,21 +21,10 @@ int main(int argc, char**argv)
 
     bmp280_init(&bmp280);
 
-    bmp280_start_forced_meas(&bmp280);
+    bmp280_oneshot_read(&bmp280);
+    
+    printf("Temperature = %f C\n", bmp280.temperature_val);
+    printf("Pressure = %f Pa\n", bmp280.pressure_val);
 
-    bmp280_wait_for_meas(&bmp280);
-
-    printf("Meas Done.\n");
-    
-    bmp280_read_raw_values(&bmp280, BMP280_PRESS_MSB_REG);
-    
-    printf("Raw Values read.\n");
-    
-    double Temper = convert_temperature_raw_values(&bmp280);
-    printf("Converted Temperature = %f\n",Temper);
-    
-    double press = convert_pressure_raw_values(&bmp280);
-    printf("Converted Pressure = %f\n",press);
-    
     return 0;
 }
