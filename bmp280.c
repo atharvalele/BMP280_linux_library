@@ -179,12 +179,11 @@ double convert_temperature_raw_values(struct bmp280_device *bmp280)
     bmp280->temperature <<= 8;
     bmp280->temperature |= bmp280->raw_values[4];
     bmp280->temperature <<=4;
-    bmp280->temperature |= (bmp280_raw_values[5]>>4);
+    bmp280->temperature |= (bmp280->raw_values[5]>>4);
     
     double var1, var2, T;
     var1 = (((double)bmp280->temperature)/16384.0 - ((double)bmp280->trim_params.dig_T1)/1024) * ((double)bmp280->trim_params.dig_T2);
-    var2 = ((((double)bmp280->temperature)/131072.0 – ((double)bmp280->trim_params.dig_T1)/8192.0) *
-            (((double)bmp280->temperature)/131072.0 – ((double)bmp280->trim_params.dig_T1)/8192.0)) * ((double)bmp280->trim_params.dig_T3);
+    var2 = ((((double)bmp280->temperature)/131072.0 - ((double)bmp280->trim_params.dig_T1)/8192.0) * (((double)bmp280->temperature)/131072.0 - ((double)bmp280->trim_params.dig_T1)/8192.0)) * ((double)bmp280->trim_params.dig_T3);
     T = (var1 + var2) / 5120.0;
     return T;
 }
