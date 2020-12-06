@@ -69,10 +69,8 @@
 #define BMP280_FILTER_COEFF_16          0x04
 
 /* Compensation Parameter storage */
-#define BMP280_DIG_T1_LSB               0x88
-#define BMP280_DIG_T1_MSB               0x89
-#define BMP280_DIG_T2_LSB               0x8A
-#define BMP280_DIG_T2_MSB               0x8B
+#define BMP280_DIG_T1                   0x88
+#define BMP280_DIG_T2                   0x8A
 
 /* Trimming params struct */
 struct bmp280_trim_params {

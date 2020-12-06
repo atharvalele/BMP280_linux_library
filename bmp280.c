@@ -60,14 +60,16 @@ uint8_t bmp280_read_reg(struct bmp280_device *bmp280, uint8_t reg)
 
 void bmp280_read_trim_params(struct bmp280_device *bmp280)
 {
-    bmp280->trim_params.dig_T1 = bmp280_read_reg(bmp280, BMP280_DIG_T1_MSB);
+    // BMP280_DIG_xx is the LSB address.
+    
+    bmp280->trim_params.dig_T1 = bmp280_read_reg(bmp280, BMP280_DIG_T1+1);
     bmp280->trim_params.dig_T1 <<= 8;
-    bmp280->trim_params.dig_T1 |= bmp280_read_reg(bmp280, BMP280_DIG_T1_LSB);
+    bmp280->trim_params.dig_T1 |= bmp280_read_reg(bmp280, BMP280_DIG_T1);
     printf("dig_T1: %d\t%x\n", bmp280->trim_params.dig_T1, bmp280->trim_params.dig_T1);
 
-    bmp280->trim_params.dig_T2 = bmp280_read_reg(bmp280, BMP280_DIG_T2_MSB);
+    bmp280->trim_params.dig_T2 = bmp280_read_reg(bmp280, BMP280_DIG_T2+1);
     bmp280->trim_params.dig_T2 <<= 8;
-    bmp280->trim_params.dig_T2 |= bmp280_read_reg(bmp280, BMP280_DIG_T2_LSB);
+    bmp280->trim_params.dig_T2 |= bmp280_read_reg(bmp280, BMP280_DIG_T2);
     bmp280->trim_params.dig_T2 = (int16_t)bmp280->trim_params.dig_T2;
     printf("dig_T2: %d\t%x\n", bmp280->trim_params.dig_T2, bmp280->trim_params.dig_T2);
 
