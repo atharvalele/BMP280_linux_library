@@ -166,14 +166,6 @@ void bmp280_wait_for_meas(struct bmp280_device *bmp280)
 
 double convert_temperature_raw_values(struct bmp280_device *bmp280)
 {
-    /*
-    //Register F7 to F9 are for pressure values
-    bmp280->pressure = bmp280->raw_values[0];
-    bmp280->pressure <<= 8;
-    bmp280->pressure |= bmp280-raw_values[1];
-    bmp280->pressure <<= 4;
-    bmp280->pressure |= (bmp280->raw_values[2]>>4);
-    */
     //Register FA to FC are for temperature values
     bmp280->temperature = bmp280->raw_values[3];
     bmp280->temperature <<= 8;
@@ -184,6 +176,33 @@ double convert_temperature_raw_values(struct bmp280_device *bmp280)
     double var1, var2, T;
     var1 = (((double)bmp280->temperature)/16384.0 - ((double)bmp280->trim_params.dig_T1)/1024) * ((double)bmp280->trim_params.dig_T2);
     var2 = ((((double)bmp280->temperature)/131072.0 - ((double)bmp280->trim_params.dig_T1)/8192.0) * (((double)bmp280->temperature)/131072.0 - ((double)bmp280->trim_params.dig_T1)/8192.0)) * ((double)bmp280->trim_params.dig_T3);
+    bmp280->t_fine = (int32_t) (var1 + var2);
     T = (var1 + var2) / 5120.0;
     return T;
+}
+
+double convert_pressure_raw_values(struct bmp280_device *bmp280)
+{
+    //Register F7 to F9 are for pressure values
+    bmp280->pressure = bmp280->raw_values[0];
+    bmp280->pressure <<= 8;
+    bmp280->pressure |= bmp280->raw_values[1];
+    bmp280->pressure <<= 4;
+    bmp280->pressure |= (bmp280->raw_values[2]>>4);
+    
+    double var1, var2, p;
+    var1 = ((double)bmp280->t_fine/2.0) - 64000.0;
+    var2 = var1 * var1 * ((double)bmp280->trim_params.dig_P6) / 32768.0;
+    var2 = var2 + var1 * ((double)bmp280->trim_params.dig_P5) * 2.0;
+    var2 = (var2/4.0) + (((double)bmp280->trim_params.dig_P4) * 65536.0);
+    var1 = (((double)bmp280->trim_params.dig_P3) * var1 * var1 / 524288.0 + ((double)bmp280->trim_params.dig_P2) * var1) / 524288.0;
+    var1 = (1.0 + var1 /32768.0) * ((double) bmp280->trim_params.dig_P1);
+    if (var1 == 0.0)
+        return 0;
+    p = 1048576.0 - (double)bmp280->pressure;
+    p = (p - (var2 / 4096.0)) * 6250.0 / var1;
+    var1 = ((double)bmp280->trim_params.dig_P9) * p * p / 2147483648.0;
+    var2 = p * ((double)bmp280->trim_params.dig_P8) / 32768.0;
+    p = p + (var1 + var2 + ((double)bmp280->trim_params.dig_P7)) / 16.0;
+    return p;
 }

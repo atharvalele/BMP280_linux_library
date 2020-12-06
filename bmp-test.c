@@ -34,5 +34,8 @@ int main(int argc, char**argv)
     double Temper = convert_temperature_raw_values(&bmp280);
     printf("Converted Temperature = %f\n",Temper);
     
+    double press = convert_pressure_raw_values(&bmp280);
+    printf("Converted Pressure = %f\n",press);
+    
     return 0;
 }
