@@ -71,6 +71,15 @@
 /* Compensation Parameter storage */
 #define BMP280_DIG_T1                   0x88
 #define BMP280_DIG_T2                   0x8A
+#define BMP280_DIG_P1                   0X8E
+#define BMP280_DIG_P2                   0X90
+#define BMP280_DIG_P3                   0x92
+#define BMP280_DIG_P4                   0x94
+#define BMP280_DIG_P5                   0x96
+#define BMP280_DIG_P6                   0x98
+#define BMP280_DIG_P7                   0x9A
+#define BMP280_DIG_P8                   0x9C
+#define BMP280_DIG_P9                   0x9E
 
 /* Trimming params struct */
 struct bmp280_trim_params {
