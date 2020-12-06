@@ -108,6 +108,8 @@ struct bmp280_device {
     uint8_t temp_os;
     uint8_t pres_os;
     uint8_t raw_values[6];
+    uint32_t temperature;
+    uint32_t pressure;
     struct bmp280_trim_params trim_params;
 };
 
@@ -122,5 +124,5 @@ void bmp280_read_raw_values(struct bmp280_device *bmp280, uint8_t reg, uint8_t *
 void bmp280_start_forced_meas(struct bmp280_device *bmp280);
 uint8_t bmp280_is_meas_in_progress(struct bmp280_device *bmp280);
 void bmp280_wait_for_meas(struct bmp280_device *bmp280);
-
+double convert_temperature_raw_values(struct bmp280_device *bmp280);
 #endif

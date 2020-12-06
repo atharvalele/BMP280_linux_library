@@ -30,6 +30,9 @@ int main(int argc, char**argv)
     bmp280_read_raw_values(&bmp280, BMP280_PRESS_MSB_REG, bmp280.raw_values);
     
     printf("Raw Values read.\n");
-
+    
+    double Temper = convert_temperature_raw_values(&bmp280);
+    printf("Converted Temperature = %f\n",Temper);
+    
     return 0;
 }
