@@ -58,11 +58,27 @@ uint8_t bmp280_read_reg(struct bmp280_device *bmp280, uint8_t reg)
     return i2c_smbus_read_byte_data(bmp280->fd, reg);
 }
 
-void bmp280_read_raw_values(struct bmp280_device *bmp280, uint8_t reg, uint8_t *values)
+void bmp280_read_raw_values(struct bmp280_device *bmp280, uint8_t reg)
 {
-    i2c_smbus_read_i2c_block_data(bmp280->fd, reg, 6, values);
-    for (int i = 0; i < 6; i++)
-        printf("%d\n",values[i]);
+    uint8_t raw_values[6];
+
+    // First 3 registers are pressure MSB to XLSB (0xF7 to 0xF9),
+    // the next 3 are for temperature (0xFA to 0xFC)
+    // 20 bit data
+    i2c_smbus_read_i2c_block_data(bmp280->fd, reg, 6, raw_values);
+
+    bmp280->pressure_raw = raw_values[0];
+    bmp280->pressure_raw <<= 8;
+    bmp280->pressure_raw |= raw_values[1];
+    bmp280->pressure_raw <<= 4;
+    bmp280->pressure_raw |= (raw_values[2]>>4);
+    
+    //Register FA to FC are for temperature values
+    bmp280->temperature_raw = raw_values[3];
+    bmp280->temperature_raw <<= 8;
+    bmp280->temperature_raw |= raw_values[4];
+    bmp280->temperature_raw <<=4;
+    bmp280->temperature_raw |= (raw_values[5]>>4);
 }
 
 void bmp280_read_trim_params(struct bmp280_device *bmp280)
@@ -166,16 +182,9 @@ void bmp280_wait_for_meas(struct bmp280_device *bmp280)
 
 double convert_temperature_raw_values(struct bmp280_device *bmp280)
 {
-    //Register FA to FC are for temperature values
-    bmp280->temperature = bmp280->raw_values[3];
-    bmp280->temperature <<= 8;
-    bmp280->temperature |= bmp280->raw_values[4];
-    bmp280->temperature <<=4;
-    bmp280->temperature |= (bmp280->raw_values[5]>>4);
-    
     double var1, var2, T;
-    var1 = (((double)bmp280->temperature)/16384.0 - ((double)bmp280->trim_params.dig_T1)/1024) * ((double)bmp280->trim_params.dig_T2);
-    var2 = ((((double)bmp280->temperature)/131072.0 - ((double)bmp280->trim_params.dig_T1)/8192.0) * (((double)bmp280->temperature)/131072.0 - ((double)bmp280->trim_params.dig_T1)/8192.0)) * ((double)bmp280->trim_params.dig_T3);
+    var1 = (((double)bmp280->temperature_raw)/16384.0 - ((double)bmp280->trim_params.dig_T1)/1024) * ((double)bmp280->trim_params.dig_T2);
+    var2 = ((((double)bmp280->temperature_raw)/131072.0 - ((double)bmp280->trim_params.dig_T1)/8192.0) * (((double)bmp280->temperature_raw)/131072.0 - ((double)bmp280->trim_params.dig_T1)/8192.0)) * ((double)bmp280->trim_params.dig_T3);
     bmp280->t_fine = (int32_t) (var1 + var2);
     T = (var1 + var2) / 5120.0;
     return T;
@@ -183,13 +192,6 @@ double convert_temperature_raw_values(struct bmp280_device *bmp280)
 
 double convert_pressure_raw_values(struct bmp280_device *bmp280)
 {
-    //Register F7 to F9 are for pressure values
-    bmp280->pressure = bmp280->raw_values[0];
-    bmp280->pressure <<= 8;
-    bmp280->pressure |= bmp280->raw_values[1];
-    bmp280->pressure <<= 4;
-    bmp280->pressure |= (bmp280->raw_values[2]>>4);
-    
     double var1, var2, p;
     var1 = ((double)bmp280->t_fine/2.0) - 64000.0;
     var2 = var1 * var1 * ((double)bmp280->trim_params.dig_P6) / 32768.0;
@@ -199,7 +201,7 @@ double convert_pressure_raw_values(struct bmp280_device *bmp280)
     var1 = (1.0 + var1 /32768.0) * ((double) bmp280->trim_params.dig_P1);
     if (var1 == 0.0)
         return 0;
-    p = 1048576.0 - (double)bmp280->pressure;
+    p = 1048576.0 - (double)bmp280->pressure_raw;
     p = (p - (var2 / 4096.0)) * 6250.0 / var1;
     var1 = ((double)bmp280->trim_params.dig_P9) * p * p / 2147483648.0;
     var2 = p * ((double)bmp280->trim_params.dig_P8) / 32768.0;

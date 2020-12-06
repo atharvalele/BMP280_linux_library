@@ -27,7 +27,7 @@ int main(int argc, char**argv)
 
     printf("Meas Done.\n");
     
-    bmp280_read_raw_values(&bmp280, BMP280_PRESS_MSB_REG, bmp280.raw_values);
+    bmp280_read_raw_values(&bmp280, BMP280_PRESS_MSB_REG);
     
     printf("Raw Values read.\n");
     
