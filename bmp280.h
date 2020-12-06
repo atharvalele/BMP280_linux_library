@@ -71,6 +71,7 @@
 /* Compensation Parameter storage */
 #define BMP280_DIG_T1                   0x88
 #define BMP280_DIG_T2                   0x8A
+#define BMP280_DIG_T3					0x8C
 #define BMP280_DIG_P1                   0X8E
 #define BMP280_DIG_P2                   0X90
 #define BMP280_DIG_P3                   0x92
