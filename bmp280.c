@@ -58,6 +58,13 @@ uint8_t bmp280_read_reg(struct bmp280_device *bmp280, uint8_t reg)
     return i2c_smbus_read_byte_data(bmp280->fd, reg);
 }
 
+void bmp280_read_raw_values(struct bmp280_device *bmp280, uint8_t reg, uint8_t *values)
+{
+    i2c_smbus_read_i2c_block_data(bmp280->fd, reg, 6, values);
+    for (int i = 0; i < 6; i++)
+        printf("%d\n",values[i]);
+}
+
 void bmp280_read_trim_params(struct bmp280_device *bmp280)
 {
     // BMP280_DIG_xx is the LSB address.

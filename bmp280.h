@@ -107,6 +107,7 @@ struct bmp280_device {
     uint8_t mode;
     uint8_t temp_os;
     uint8_t pres_os;
+    uint8_t raw_values[6];
     struct bmp280_trim_params trim_params;
 };
 
@@ -117,6 +118,7 @@ void bmp280_config(struct bmp280_device *bmp280, uint8_t i2c_adapter, uint8_t i2
 void bmp280_read_trim_params(struct bmp280_device *bmp280);
 void bmp280_write_reg(struct bmp280_device *bmp280, uint8_t reg, uint8_t dat);
 uint8_t bmp280_read_reg(struct bmp280_device *bmp280, uint8_t reg);
+void bmp280_read_raw_values(struct bmp280_device *bmp280, uint8_t reg, uint8_t *values);
 void bmp280_start_forced_meas(struct bmp280_device *bmp280);
 uint8_t bmp280_is_meas_in_progress(struct bmp280_device *bmp280);
 void bmp280_wait_for_meas(struct bmp280_device *bmp280);
