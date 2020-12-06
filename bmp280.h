@@ -25,6 +25,9 @@
 #include "sys/stat.h"
 #include "fcntl.h"
 
+/* Debug Switch */
+#define BMP280_DEBUG                    0
+
 /* Chip I2C Address */
 #define BMP280_I2C_ADDR_PRIM            0x76
 #define BMP280_I2C_ADDR_SEC             0x77
